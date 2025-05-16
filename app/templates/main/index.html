@@ -1,0 +1,216 @@
+{% extends "layout/base.html" %}
+
+{% block title %}RD Learning Planet - Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h1 class="display-4 fw-bold animate__animated animate__fadeInUp">Welcome to RD Learning Planet</h1>
+                <p class="lead my-4 animate__animated animate__fadeInUp animate__delay-1s">
+                    The complete learning platform for classes 6-12 with mock tests, doubt solving, performance tracking, and more.
+                </p>
+                <div class="d-flex gap-3 animate__animated animate__fadeInUp animate__delay-2s">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg">Get Started</a>
+                    <a href="{{ url_for('main.features') }}" class="btn btn-outline-light btn-lg">Learn More</a>
+                </div>
+            </div>
+            <div class="col-lg-6 animate__animated animate__fadeInRight">
+                <img src="{{ url_for('static', filename='img/hero-image.svg') }}" alt="Learning Platform" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold" data-aos="fade-up">Why Choose RD Learning Planet?</h2>
+            <p class="lead" data-aos="fade-up" data-aos-delay="100">All-in-one platform designed for students, teachers, and parents</p>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Feature 1 -->
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-primary text-white rounded-circle mb-3 mx-auto">
+                            <i class="fas fa-book-open fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Interactive Learning</h5>
+                        <p class="card-text">Access engaging video lectures and interactive learning materials.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-success text-white rounded-circle mb-3 mx-auto">
+                            <i class="fas fa-tasks fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Mock Tests</h5>
+                        <p class="card-text">Practice with our comprehensive mock tests and get instant feedback.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-info text-white rounded-circle mb-3 mx-auto">
+                            <i class="fas fa-question-circle fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Doubt Solving</h5>
+                        <p class="card-text">Get your doubts resolved by expert teachers in real-time.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 4 -->
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-warning text-white rounded-circle mb-3 mx-auto">
+                            <i class="fas fa-chart-line fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Performance Tracking</h5>
+                        <p class="card-text">Track your progress with detailed analytics and performance reports.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold" data-aos="fade-up">What Our Users Say</h2>
+            <p class="lead" data-aos="fade-up" data-aos-delay="100">Hear from students, parents, and teachers</p>
+        </div>
+        
+        <div class="swiper testimonial-slider" data-aos="fade-up" data-aos-delay="200">
+            <div class="swiper-wrapper">
+                <!-- Testimonial 1 -->
+                <div class="swiper-slide">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex mb-3">
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                            <p class="card-text mb-3">"RD Learning Planet has transformed my learning experience. The mock tests and doubt solving features have helped me improve my grades significantly."</p>
+                            <div class="d-flex align-items-center">
+                                <img src="https://via.placeholder.com/50" alt="Student" class="rounded-circle me-3">
+                                <div>
+                                    <h6 class="mb-0">Rahul Sharma</h6>
+                                    <small class="text-muted">Class 10 Student</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="swiper-slide">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex mb-3">
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                            <p class="card-text mb-3">"As a parent, I appreciate the detailed performance reports that help me track my child's progress. The platform has made learning more engaging for my daughter."</p>
+                            <div class="d-flex align-items-center">
+                                <img src="https://via.placeholder.com/50" alt="Parent" class="rounded-circle me-3">
+                                <div>
+                                    <h6 class="mb-0">Priya Patel</h6>
+                                    <small class="text-muted">Parent</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="swiper-slide">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex mb-3">
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                            <p class="card-text mb-3">"The platform has made teaching more efficient. I can easily manage tests, track student performance, and address doubts effectively."</p>
+                            <div class="d-flex align-items-center">
+                                <img src="https://via.placeholder.com/50" alt="Teacher" class="rounded-circle me-3">
+                                <div>
+                                    <h6 class="mb-0">Amit Verma</h6>
+                                    <small class="text-muted">Science Teacher</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="cta py-5 bg-primary text-white text-center">
+    <div class="container">
+        <h2 class="fw-bold mb-4" data-aos="fade-up">Ready to Start Your Learning Journey?</h2>
+        <p class="lead mb-4" data-aos="fade-up" data-aos-delay="100">Join thousands of students who are already benefiting from RD Learning Planet</p>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg" data-aos="fade-up" data-aos-delay="200">Register Now</a>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Swiper
+        const testimonialSwiper = new Swiper('.testimonial-slider', {
+            slidesPerView: 1,
+            spaceBetween: 30,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            breakpoints: {
+                768: {
+                    slidesPerView: 2,
+                },
+                992: {
+                    slidesPerView: 3,
+                }
+            },
+            autoplay: {
+                delay: 5000,
+            },
+        });
+    });
+</script>
+{% endblock %} 
