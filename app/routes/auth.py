@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
-from flask_login import login_user, logout_user, current_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.urls import url_parse
 from datetime import datetime
 
@@ -13,86 +13,63 @@ auth_bp = Blueprint('auth', __name__)
 def login():
     """User login route"""
     if current_user.is_authenticated:
-        return redirect(url_for('main.dashboard'))
+        return redirect(url_for('main.index'))
     
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data.lower()).first()
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        remember = bool(request.form.get('remember', False))
         
-        if user is None or not user.check_password(form.password.data):
-            flash('Invalid email or password', 'danger')
-            return render_template('auth/login.html', form=form)
-        
-        if not user.active:
-            flash('Your account has been deactivated. Please contact support.', 'warning')
-            return render_template('auth/login.html', form=form)
-        
-        # Log the user in
-        login_user(user, remember=form.remember_me.data)
-        
-        # Update last login timestamp
-        user.last_login_at = datetime.utcnow()
-        db.session.commit()
-        
-        # Redirect to requested page or dashboard
-        next_page = request.args.get('next')
-        if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('main.dashboard')
-        
-        return redirect(next_page)
+        user = User.query.filter_by(email=email).first()
+        if user and user.check_password(password):
+            login_user(user, remember=remember)
+            next_page = request.args.get('next')
+            return redirect(next_page or url_for('main.index'))
+        flash('Invalid email or password', 'error')
     
-    return render_template('auth/login.html', form=form)
+    return render_template('auth/login.html')
 
 @auth_bp.route('/logout')
+@login_required
 def logout():
     """User logout route"""
     logout_user()
-    flash('You have been logged out.', 'info')
     return redirect(url_for('main.index'))
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     """User registration route"""
     if current_user.is_authenticated:
-        return redirect(url_for('main.dashboard'))
+        return redirect(url_for('main.index'))
     
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        try:
-            user = User(
-                username=form.username.data,
-                email=form.email.data.lower(),
-                first_name=form.first_name.data,
-                last_name=form.last_name.data,
-                grade=form.grade.data if form.role.data == 'student' else None
-            )
-            user.set_password(form.password.data)
-            
-            # Assign role
-            role = Role.query.filter_by(name=form.role.data).first()
-            if role:
-                user.roles.append(role)
-            else:
-                flash('Invalid role selected', 'danger')
-                return render_template('auth/register.html', form=form)
-            
-            db.session.add(user)
-            db.session.commit()
-            
-            flash('Registration successful! You can now log in.', 'success')
-            return redirect(url_for('auth.login'))
-        except Exception as e:
-            db.session.rollback()
-            flash(f'Registration failed. Please try again.', 'danger')
-            return render_template('auth/register.html', form=form)
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        username = request.form.get('username')
+        role = request.form.get('role')
+        
+        if User.query.filter_by(email=email).first():
+            flash('Email already registered', 'error')
+            return redirect(url_for('auth.register'))
+        
+        if User.query.filter_by(username=username).first():
+            flash('Username already taken', 'error')
+            return redirect(url_for('auth.register'))
+        
+        user = User(
+            email=email,
+            username=username,
+            role=role
+        )
+        user.set_password(password)
+        
+        db.session.add(user)
+        db.session.commit()
+        
+        flash('Registration successful! Please login.', 'success')
+        return redirect(url_for('auth.login'))
     
-    # If form validation failed, print the errors
-    if form.errors:
-        for field, errors in form.errors.items():
-            for error in errors:
-                flash(f'{field}: {error}', 'danger')
-    
-    return render_template('auth/register.html', form=form)
+    return render_template('auth/register.html')
 
 @auth_bp.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():

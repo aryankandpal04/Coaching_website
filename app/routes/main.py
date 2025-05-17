@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, current_app, redirect, url_for
-from flask_login import current_user
+from flask_login import current_user, login_required
 
 main_bp = Blueprint('main', __name__)
 
@@ -24,20 +24,14 @@ def features():
     return render_template('main/features.html')
 
 @main_bp.route('/dashboard')
+@login_required
 def dashboard():
-    """Dashboard redirect based on user role"""
-    if not current_user.is_authenticated:
-        return redirect(url_for('auth.login'))
-    
-    # Redirect based on user role
-    if current_user.is_admin:
-        return redirect(url_for('admin.dashboard'))
-    elif current_user.is_teacher:
-        return redirect(url_for('teacher.dashboard'))
-    elif current_user.is_student:
-        return redirect(url_for('student.dashboard'))
-    elif current_user.is_parent:
-        return redirect(url_for('parent.dashboard'))
-    
-    # Default fallback
-    return redirect(url_for('main.index')) 
+    if current_user.is_admin():
+        return render_template('admin/dashboard.html')
+    elif current_user.is_teacher():
+        return render_template('teacher/dashboard.html')
+    elif current_user.is_student():
+        return render_template('student/dashboard.html')
+    elif current_user.is_parent():
+        return render_template('parent/dashboard.html')
+    return render_template('main/dashboard.html') 
