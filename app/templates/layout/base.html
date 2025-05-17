@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}RD Learning Planet{% endblock %}</title>
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/logo.svg') }}">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
@@ -27,62 +33,85 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('main.index') }}">
-                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="RD Learning Planet" height="40">
-                RD Learning Planet
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('main.index') }}">
+                <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="RD Learning Planet" class="me-2">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
+                <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'main.index' %}active{% endif %}" href="{{ url_for('main.index') }}">Home</a>
+                        <a class="nav-link {% if request.endpoint == 'main.index' %}active{% endif %}" href="{{ url_for('main.index') }}">
+                            <i class="fas fa-home me-1"></i> Home
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'main.features' %}active{% endif %}" href="{{ url_for('main.features') }}">Features</a>
+                        <a class="nav-link {% if request.endpoint == 'main.features' %}active{% endif %}" href="{{ url_for('main.features') }}">
+                            <i class="fas fa-star me-1"></i> Features
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'main.about' %}active{% endif %}" href="{{ url_for('main.about') }}">About</a>
+                        <a class="nav-link {% if request.endpoint == 'main.about' %}active{% endif %}" href="{{ url_for('main.about') }}">
+                            <i class="fas fa-info-circle me-1"></i> About
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'main.contact' %}active{% endif %}" href="{{ url_for('main.contact') }}">Contact</a>
+                        <a class="nav-link {% if request.endpoint == 'main.contact' %}active{% endif %}" href="{{ url_for('main.contact') }}">
+                            <i class="fas fa-envelope me-1"></i> Contact
+                        </a>
                     </li>
                 </ul>
-                <ul class="navbar-nav">
+                <div class="navbar-nav ms-auto">
                     {% if current_user.is_authenticated %}
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user-circle me-1"></i> {{ current_user.username }}
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="avatar-circle me-2">
+                                    <span class="avatar-initials">{{ current_user.username[0]|upper }}</span>
+                                </div>
+                                {{ current_user.username }}
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
-                                <li><a class="dropdown-item" href="#">Profile</a></li>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="navbarDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('main.dashboard') }}">
+                                        <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="fas fa-user me-2"></i> Profile
+                                    </a>
+                                </li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">
+                                        <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                     {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint == 'auth.login' %}active{% endif %}" href="{{ url_for('auth.login') }}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn btn-primary {% if request.endpoint == 'auth.register' %}active{% endif %}" href="{{ url_for('auth.register') }}">Register</a>
-                        </li>
+                        <div class="d-flex gap-2">
+                            <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+                            <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Get Started</a>
+                        </div>
                     {% endif %}
-                </ul>
+                </div>
             </div>
         </div>
     </nav>
+
+    <!-- Spacer for fixed navbar -->
+    <div style="height: 72px;"></div>
 
     <!-- Flash Messages -->
     <div class="container mt-3">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
                         {{ message }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
@@ -92,52 +121,65 @@
     </div>
 
     <!-- Main Content -->
-    <main class="py-4">
+    <main>
         {% block content %}{% endblock %}
     </main>
 
     <!-- Footer -->
-    <footer class="bg-dark text-light py-4 mt-5">
+    <footer class="footer mt-auto py-5">
         <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <h5>RD Learning Planet</h5>
-                    <p>Empowering students with quality education and comprehensive learning tools.</p>
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="RD Learning Planet" class="mb-4" height="40">
+                    <p class="text-light opacity-75">Empowering students with quality education and comprehensive learning tools.</p>
                     <div class="social-icons">
-                        <a href="#" class="text-light me-2"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-light me-2"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-light me-2"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-light me-2"><i class="fab fa-youtube"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
-                <div class="col-md-4 mb-4 mb-md-0">
+                <div class="col-sm-6 col-lg-2">
                     <h5>Quick Links</h5>
                     <ul class="list-unstyled">
-                        <li><a href="{{ url_for('main.index') }}" class="text-light">Home</a></li>
-                        <li><a href="{{ url_for('main.features') }}" class="text-light">Features</a></li>
-                        <li><a href="{{ url_for('main.about') }}" class="text-light">About</a></li>
-                        <li><a href="{{ url_for('main.contact') }}" class="text-light">Contact</a></li>
+                        <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                        <li><a href="{{ url_for('main.features') }}">Features</a></li>
+                        <li><a href="{{ url_for('main.about') }}">About</a></li>
+                        <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
                     </ul>
                 </div>
-                <div class="col-md-4">
-                    <h5>Contact Us</h5>
-                    <address>
-                        <p><i class="fas fa-map-marker-alt me-2"></i> 123 Education St, Learning City</p>
-                        <p><i class="fas fa-phone me-2"></i> +1 (555) 123-4567</p>
-                        <p><i class="fas fa-envelope me-2"></i> info@rdlearningplanet.com</p>
-                    </address>
+                <div class="col-sm-6 col-lg-3">
+                    <h5>Features</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Mock Tests</a></li>
+                        <li><a href="#">Live Classes</a></li>
+                        <li><a href="#">Doubt Solving</a></li>
+                        <li><a href="#">Performance Analytics</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h5>Contact</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-map-marker-alt me-2"></i> 123 Education Street, Learning City, India
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-phone me-2"></i> +91 123-456-7890
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-envelope me-2"></i> info@rdlearningplanet.com
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <hr class="bg-light">
-            <div class="row">
+            <hr class="mt-4 mb-3 border-secondary">
+            <div class="row align-items-center">
                 <div class="col-md-6 text-center text-md-start">
-                    <p class="mb-0">&copy; 2023 RD Learning Planet. All rights reserved.</p>
+                    <p class="mb-0 text-light opacity-75">&copy; 2024 RD Learning Planet. All rights reserved.</p>
                 </div>
-                <div class="col-md-6 text-center text-md-end">
-                    <p class="mb-0">
-                        <a href="#" class="text-light me-3">Privacy Policy</a>
-                        <a href="#" class="text-light">Terms of Service</a>
-                    </p>
+                <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+                    <a href="#" class="text-light opacity-75 me-3">Privacy Policy</a>
+                    <a href="#" class="text-light opacity-75">Terms of Service</a>
                 </div>
             </div>
         </div>
@@ -166,6 +208,16 @@
         AOS.init({
             duration: 800,
             once: true
+        });
+
+        // Add shadow to navbar on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 0) {
+                navbar.classList.add('shadow-sm');
+            } else {
+                navbar.classList.remove('shadow-sm');
+            }
         });
     </script>
     

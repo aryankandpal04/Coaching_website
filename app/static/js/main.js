@@ -3,17 +3,218 @@
  * This file contains common JavaScript functionality used across the application
  */
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize tooltips
+// Global AJAX Setup
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrf_token'));
+        }
+    }
+});
+
+// Get CSRF Token from cookie
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Show Loading Spinner
+function showSpinner() {
+    const spinner = document.createElement('div');
+    spinner.className = 'spinner-overlay';
+    spinner.innerHTML = '<div class="spinner"></div>';
+    document.body.appendChild(spinner);
+}
+
+// Hide Loading Spinner
+function hideSpinner() {
+    const spinner = document.querySelector('.spinner-overlay');
+    if (spinner) {
+        spinner.remove();
+    }
+}
+
+// Show Toast Notification
+function showToast(message, type = 'success') {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+    });
+
+    Toast.fire({
+        icon: type,
+        title: message
+    });
+}
+
+// Format Date
+function formatDate(dateString) {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+}
+
+// Format Time Duration
+function formatDuration(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+
+    let result = '';
+    if (hours > 0) result += `${hours}h `;
+    if (minutes > 0) result += `${minutes}m `;
+    if (remainingSeconds > 0 || result === '') result += `${remainingSeconds}s`;
+
+    return result.trim();
+}
+
+// Initialize Video Player
+function initializeVideoPlayer(videoElement) {
+    if (!videoElement) return;
+
+    const player = new Plyr(videoElement, {
+        controls: [
+            'play-large',
+            'play',
+            'progress',
+            'current-time',
+            'mute',
+            'volume',
+            'captions',
+            'settings',
+            'pip',
+            'airplay',
+            'fullscreen'
+        ],
+        settings: ['captions', 'quality', 'speed'],
+        speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] }
+    });
+
+    // Save timestamp every 5 seconds
+    let saveTimeoutId;
+    player.on('timeupdate', event => {
+        clearTimeout(saveTimeoutId);
+        saveTimeoutId = setTimeout(() => {
+            const currentTime = player.currentTime;
+            localStorage.setItem(`video_${videoElement.dataset.videoId}`, currentTime);
+        }, 5000);
+    });
+
+    // Restore timestamp
+    const savedTime = localStorage.getItem(`video_${videoElement.dataset.videoId}`);
+    if (savedTime) {
+        player.currentTime = parseFloat(savedTime);
+    }
+
+    return player;
+}
+
+// Initialize Charts
+function initializeCharts() {
+    // Performance Chart
+    const performanceCtx = document.getElementById('performanceChart');
+    if (performanceCtx) {
+        new Chart(performanceCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Performance',
+                    data: [],
+                    borderColor: '#007bff',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    }
+
+    // Attendance Chart
+    const attendanceCtx = document.getElementById('attendanceChart');
+    if (attendanceCtx) {
+        new Chart(attendanceCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Present', 'Absent'],
+                datasets: [{
+                    data: [0, 0],
+                    backgroundColor: ['#28a745', '#dc3545']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    }
+}
+
+// Handle File Upload
+function handleFileUpload(input, previewElement, maxSize = 5242880) {
+    const file = input.files[0];
+    if (!file) return;
+
+    // Check file size
+    if (file.size > maxSize) {
+        showToast('File size should not exceed 5MB', 'error');
+        input.value = '';
+        return;
+    }
+
+    // Show preview if it's an image
+    if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewElement.src = e.target.result;
+            previewElement.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Initialize Tooltips and Popovers
+function initializeTooltips() {
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    const tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+    tooltipTriggerList.map(function(tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
 
-    // Initialize popovers
     const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-    const popoverList = popoverTriggerList.map(function(popoverTriggerEl) {
+    popoverTriggerList.map(function(popoverTriggerEl) {
         return new bootstrap.Popover(popoverTriggerEl);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tooltips and popovers
+    initializeTooltips();
+
+    // Initialize charts if they exist
+    initializeCharts();
+
+    // Initialize video players
+    const videoElements = document.querySelectorAll('.video-player');
+    videoElements.forEach(initializeVideoPlayer);
+
+    // Add fade-in animation to cards
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.classList.add('fade-in');
     });
 
     // Flash message auto-close

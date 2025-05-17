@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import current_app
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from app import db
+from app import db, login_manager
 
 # Association table for user-role relationship
 user_roles = db.Table('user_roles',
@@ -55,6 +55,21 @@ class User(UserMixin, db.Model):
     parent_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     children = db.relationship('User', backref=db.backref('parent', remote_side=[id]), lazy=True)
     
+    # New fields
+    role = db.Column(db.String(20), nullable=False)  # admin, teacher, student, parent
+    phone = db.Column(db.String(20))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    last_login = db.Column(db.DateTime)
+    is_active = db.Column(db.Boolean, default=True)
+    
+    # Relationships
+    lectures_created = db.relationship('Lecture', backref='author', lazy='dynamic')
+    tests_created = db.relationship('Test', backref='creator', lazy='dynamic')
+    test_results = db.relationship('Result', backref='student', lazy='dynamic')
+    doubts_asked = db.relationship('Doubt', backref='student', lazy='dynamic', foreign_keys='Doubt.student_id')
+    doubts_answered = db.relationship('Doubt', backref='teacher', lazy='dynamic', foreign_keys='Doubt.teacher_id')
+    fees = db.relationship('Fee', backref='student', lazy='dynamic')
+    
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
     
@@ -96,4 +111,25 @@ class User(UserMixin, db.Model):
     @property
     def is_parent(self):
         """Check if the user is a parent"""
-        return self.has_role('parent') 
+        return self.has_role('parent')
+    
+    def is_admin(self):
+        return self.role == 'admin'
+    
+    def is_teacher(self):
+        return self.role == 'teacher'
+    
+    def is_student(self):
+        return self.role == 'student'
+    
+    def is_parent(self):
+        return self.role == 'parent'
+    
+    def get_full_name(self):
+        if self.first_name and self.last_name:
+            return f"{self.first_name} {self.last_name}"
+        return self.username
+
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id)) 

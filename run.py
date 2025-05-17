@@ -1,6 +1,11 @@
 import os
 from app import create_app, db
 from flask_migrate import upgrade
+from app.models.user import User
+from app.models.lecture import Lecture, LectureComment, LectureBookmark, LectureView
+from app.models.test import Test, Question, Result, Answer
+from app.models.doubt import Doubt, DoubtResponse, DoubtAttachment, DoubtResponseAttachment
+from app.models.fee import Fee, Payment
 
 # Create the application instance
 app = create_app(os.getenv("FLASK_ENV", "development"))
@@ -9,9 +14,22 @@ app = create_app(os.getenv("FLASK_ENV", "development"))
 @app.shell_context_processor
 def make_shell_context():
     return {
-        "db": db,
-        # Import models here to make them available in the shell
-        # Example: "User": User
+        'db': db,
+        'User': User,
+        'Lecture': Lecture,
+        'LectureComment': LectureComment,
+        'LectureBookmark': LectureBookmark,
+        'LectureView': LectureView,
+        'Test': Test,
+        'Question': Question,
+        'Result': Result,
+        'Answer': Answer,
+        'Doubt': Doubt,
+        'DoubtResponse': DoubtResponse,
+        'DoubtAttachment': DoubtAttachment,
+        'DoubtResponseAttachment': DoubtResponseAttachment,
+        'Fee': Fee,
+        'Payment': Payment
     }
 
 # Command to create an admin user
@@ -46,4 +64,4 @@ def create_admin():
     print("Admin user created successfully.")
 
 if __name__ == "__main__":
-    app.run() 
+    app.run(debug=True) 

@@ -1,0 +1,131 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Features - RD Learning Planet{% endblock %}
+
+{% block content %}
+<!-- Features Hero Section -->
+<section class="hero-small bg-primary text-white py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="fw-bold mb-4">Our Features</h1>
+                <p class="lead">Discover how RD Learning Planet empowers students, teachers, and parents with innovative learning tools</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Features Section -->
+<section class="features-detailed py-5">
+    <div class="container">
+        <!-- Learning Management -->
+        <div class="row align-items-center mb-5" data-aos="fade-up">
+            <div class="col-lg-6 order-lg-2">
+                <img src="{{ url_for('static', filename='img/features/learning.svg') }}" alt="Learning Management" class="img-fluid mb-4 mb-lg-0">
+            </div>
+            <div class="col-lg-6 order-lg-1">
+                <h2 class="fw-bold mb-4">Interactive Learning Platform</h2>
+                <p class="lead mb-4">Access comprehensive learning materials designed for classes 6-12</p>
+                <ul class="list-unstyled">
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        High-quality video lectures from expert teachers
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Interactive study materials and resources
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Subject-wise organized content
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Mock Tests -->
+        <div class="row align-items-center mb-5" data-aos="fade-up">
+            <div class="col-lg-6">
+                <img src="{{ url_for('static', filename='img/features/tests.svg') }}" alt="Mock Tests" class="img-fluid mb-4 mb-lg-0">
+            </div>
+            <div class="col-lg-6">
+                <h2 class="fw-bold mb-4">Comprehensive Mock Tests</h2>
+                <p class="lead mb-4">Practice with our extensive collection of mock tests</p>
+                <ul class="list-unstyled">
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Regular practice tests and assessments
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Instant results and detailed analysis
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Performance tracking and improvement suggestions
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Doubt Solving -->
+        <div class="row align-items-center mb-5" data-aos="fade-up">
+            <div class="col-lg-6 order-lg-2">
+                <img src="{{ url_for('static', filename='img/features/doubt.svg') }}" alt="Doubt Solving" class="img-fluid mb-4 mb-lg-0">
+            </div>
+            <div class="col-lg-6 order-lg-1">
+                <h2 class="fw-bold mb-4">Interactive Doubt Solving</h2>
+                <p class="lead mb-4">Get your doubts cleared by expert teachers</p>
+                <ul class="list-unstyled">
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Real-time doubt solving sessions
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        One-on-one interaction with teachers
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        24/7 doubt clearing support
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Performance Tracking -->
+        <div class="row align-items-center" data-aos="fade-up">
+            <div class="col-lg-6">
+                <img src="{{ url_for('static', filename='img/features/performance.svg') }}" alt="Performance Tracking" class="img-fluid mb-4 mb-lg-0">
+            </div>
+            <div class="col-lg-6">
+                <h2 class="fw-bold mb-4">Advanced Performance Analytics</h2>
+                <p class="lead mb-4">Track and analyze your progress with detailed insights</p>
+                <ul class="list-unstyled">
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Detailed performance reports
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Subject-wise progress tracking
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Personalized improvement suggestions
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="cta bg-primary text-white py-5">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-4" data-aos="fade-up">Ready to Start Learning?</h2>
+        <p class="lead mb-4" data-aos="fade-up" data-aos-delay="100">Join thousands of students already benefiting from our platform</p>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg" data-aos="fade-up" data-aos-delay="200">Get Started Now</a>
+    </div>
+</section>
+{% endblock %} 

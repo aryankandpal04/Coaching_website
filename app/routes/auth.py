@@ -58,24 +58,39 @@ def register():
     
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(
-            username=form.username.data,
-            email=form.email.data.lower(),
-            first_name=form.first_name.data,
-            last_name=form.last_name.data
-        )
-        user.set_password(form.password.data)
-        
-        # Assign role
-        role = Role.query.filter_by(name=form.role.data).first()
-        if role:
-            user.roles.append(role)
-        
-        db.session.add(user)
-        db.session.commit()
-        
-        flash('Registration successful! You can now log in.', 'success')
-        return redirect(url_for('auth.login'))
+        try:
+            user = User(
+                username=form.username.data,
+                email=form.email.data.lower(),
+                first_name=form.first_name.data,
+                last_name=form.last_name.data,
+                grade=form.grade.data if form.role.data == 'student' else None
+            )
+            user.set_password(form.password.data)
+            
+            # Assign role
+            role = Role.query.filter_by(name=form.role.data).first()
+            if role:
+                user.roles.append(role)
+            else:
+                flash('Invalid role selected', 'danger')
+                return render_template('auth/register.html', form=form)
+            
+            db.session.add(user)
+            db.session.commit()
+            
+            flash('Registration successful! You can now log in.', 'success')
+            return redirect(url_for('auth.login'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Registration failed. Please try again.', 'danger')
+            return render_template('auth/register.html', form=form)
+    
+    # If form validation failed, print the errors
+    if form.errors:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f'{field}: {error}', 'danger')
     
     return render_template('auth/register.html', form=form)
 

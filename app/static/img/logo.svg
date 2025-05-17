@@ -1,0 +1,29 @@
+<svg width="200" height="50" viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
+    <!-- Planet Circle -->
+    <circle cx="25" cy="25" r="20" fill="url(#planetGradient)" />
+    
+    <!-- Rings -->
+    <ellipse cx="25" cy="25" rx="24" ry="8" stroke="url(#ringGradient)" stroke-width="2" fill="none" transform="rotate(-15)" />
+    <ellipse cx="25" cy="25" rx="22" ry="6" stroke="url(#ringGradient2)" stroke-width="1.5" fill="none" transform="rotate(15)" opacity="0.6" />
+    
+    <!-- Text -->
+    <text x="60" y="32" font-family="Inter, sans-serif" font-weight="800" font-size="24" fill="#0ea5e9">
+        RD Learning
+    </text>
+    
+    <!-- Gradients -->
+    <defs>
+        <linearGradient id="planetGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#0ea5e9"/>
+            <stop offset="100%" style="stop-color:#38bdf8"/>
+        </linearGradient>
+        <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#0ea5e9"/>
+            <stop offset="100%" style="stop-color:#38bdf8"/>
+        </linearGradient>
+        <linearGradient id="ringGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#38bdf8"/>
+            <stop offset="100%" style="stop-color:#7dd3fc"/>
+        </linearGradient>
+    </defs>
+</svg> 
