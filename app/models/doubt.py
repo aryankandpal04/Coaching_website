@@ -7,59 +7,39 @@ class Doubt(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
-    content = db.Column(db.Text, nullable=False)
-    
-    # Subject and grade
-    subject = db.Column(db.String(100), nullable=False)
-    class_level = db.Column(db.String(20), nullable=False)  # Class/Grade level
-    
-    # Status
-    status = db.Column(db.String(20), default='pending')  # pending, answered, resolved
-    
-    # User info
+    description = db.Column(db.Text, nullable=False)
+    subject = db.Column(db.String(50), nullable=False)
+    grade = db.Column(db.Integer, nullable=False)  # Class 6-12
     student_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    teacher_id = db.Column(db.Integer, db.ForeignKey('users.id'))  # Teacher assigned to answer
-    
-    # Timestamps
+    teacher_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    status = db.Column(db.String(20), default='pending')  # pending, assigned, resolved
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    resolved_at = db.Column(db.DateTime)
+    
+    # Optional fields
+    attachment_url = db.Column(db.String(500))
+    priority = db.Column(db.String(20), default='normal')  # low, normal, high
+    tags = db.Column(db.String(200))  # Comma-separated tags
     
     # Relationships
-    responses = db.relationship('DoubtResponse', backref='doubt', lazy='dynamic')
-    attachments = db.relationship('DoubtAttachment', backref='doubt', lazy='dynamic')
+    responses = db.relationship('DoubtResponse', backref='doubt', lazy=True, cascade='all, delete-orphan')
     
     # User relationships
     student = db.relationship('User', foreign_keys=[student_id], backref='doubts_asked')
     teacher = db.relationship('User', foreign_keys=[teacher_id], backref='doubts_assigned')
     
-    def __init__(self, title, content, subject, class_level, student_id):
+    def __init__(self, title, description, subject, grade, student_id, **kwargs):
         self.title = title
-        self.content = content
+        self.description = description
         self.subject = subject
-        self.class_level = class_level
+        self.grade = grade
         self.student_id = student_id
-    
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'title': self.title,
-            'content': self.content,
-            'subject': self.subject,
-            'class_level': self.class_level,
-            'status': self.status,
-            'student_id': self.student_id,
-            'teacher_id': self.teacher_id,
-            'created_at': self.created_at.isoformat(),
-            'updated_at': self.updated_at.isoformat()
-        }
+        for key, value in kwargs.items():
+            setattr(self, key, value)
     
     def __repr__(self):
-        return f'<Doubt {self.id}: {self.title}>'
-    
-    @property
-    def response_count(self):
-        """Get the number of responses to the doubt"""
-        return len(self.responses)
+        return f'<Doubt {self.title}>'
 
 class DoubtResponse(db.Model):
     """Model for responses to doubts"""
@@ -67,21 +47,22 @@ class DoubtResponse(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     doubt_id = db.Column(db.Integer, db.ForeignKey('doubts.id'), nullable=False)
-    content = db.Column(db.Text, nullable=False)
-    
-    # User info
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    
-    # Is this the accepted answer?
-    is_accepted = db.Column(db.Boolean, default=False)
-    
-    # Timestamps
+    content = db.Column(db.Text, nullable=False)
+    attachment_url = db.Column(db.String(500))
+    is_solution = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Relationships
     user = db.relationship('User', backref='doubt_responses')
-    attachments = db.relationship('DoubtResponseAttachment', backref='response', lazy='dynamic')
+    
+    def __init__(self, doubt_id, user_id, content, **kwargs):
+        self.doubt_id = doubt_id
+        self.user_id = user_id
+        self.content = content
+        for key, value in kwargs.items():
+            setattr(self, key, value)
     
     def __repr__(self):
         return f'<DoubtResponse {self.id}>'

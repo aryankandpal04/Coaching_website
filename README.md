@@ -1,150 +1,153 @@
 # RD Learning Planet
 
-A comprehensive, interactive, and intelligent coaching web application for students from Class 6 to Class 12, their teachers, parents, and admin team.
+A comprehensive web platform for students (Class 6-12), teachers, parents, and admin team to manage online learning.
 
 ## Features
 
-### Core Features
-- Multi-role authentication (Admin, Teacher, Student, Parent)
-- Video lecture management
-- Mock test system with MCQ and written formats
-- Doubt resolution system
-- Fee management
-- Performance tracking and analytics
+- **User Management**
+  - Role-based access control (Admin, Teacher, Student, Parent)
+  - Secure authentication and authorization
+  - Profile management
 
-### Advanced Features
-- AI-powered learning insights
-- Interactive video lectures with bookmarks
-- Gamified learning experience
-- Real-time notifications
-- Smart resource center
-- Mobile-optimized interface (PWA)
+- **Learning Management**
+  - Video lectures with interactive features
+  - Course materials and resources
+  - Progress tracking
+  - Bookmarking and notes
+
+- **Mock Test System**
+  - Multiple choice and subjective tests
+  - Automated grading
+  - Performance analytics
+  - Test scheduling
+
+- **Doubt Resolution**
+  - Real-time doubt posting
+  - Teacher responses
+  - Doubt tracking
+  - File attachments
+
+- **Fee Management**
+  - Online fee payment
+  - Payment history
+  - Receipt generation
+  - Due date reminders
+
+- **Performance Analytics**
+  - AI-powered learning insights
+  - Progress reports
+  - Performance comparisons
+  - Improvement suggestions
 
 ## Tech Stack
 
-### Frontend
-- HTML5, CSS3, Bootstrap 5
-- JavaScript (Vanilla)
-- Chart.js for visualizations
-- AOS.js for animations
-- SweetAlert2 for alerts
-- Video.js for video playback
+- **Frontend**
+  - HTML5, CSS3
+  - Bootstrap 5
+  - JavaScript
+  - Chart.js for visualizations
+  - AOS.js for animations
 
-### Backend
-- Python 3.8+
-- Flask framework
-- SQLAlchemy ORM
-- Flask-Login for authentication
-- Celery for background tasks
-- Redis for caching
+- **Backend**
+  - Python 3.8+
+  - Flask framework
+  - SQLAlchemy ORM
+  - Flask extensions
 
-### Database
-- SQLite (Development)
-- PostgreSQL (Production)
+- **Database**
+  - SQLite (Development)
+  - PostgreSQL (Production)
 
-### AI/ML Components
-- scikit-learn for analytics
-- TensorFlow for advanced features
-- OpenAI API for chatbot
+- **Additional Tools**
+  - Redis for caching
+  - Celery for background tasks
+  - Firebase for notifications
+  - Stripe for payments
 
-## Installation
+## Setup Instructions
 
 1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/rd-learning-planet.git
-cd rd-learning-planet
-```
+   ```bash
+   git clone https://github.com/your-username/rd-learning-planet.git
+   cd rd-learning-planet
+   ```
 
-2. Create a virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
+2. Create and activate virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # Linux/Mac
+   venv\Scripts\activate     # Windows
+   ```
 
 3. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 4. Set up environment variables:
-```bash
-cp .env.example .env
-# Edit .env with your configuration
-```
+   ```bash
+   cp env.example .env
+   # Edit .env with your configuration
+   ```
 
 5. Initialize the database:
-```bash
-flask db upgrade
-```
+   ```bash
+   flask init-db
+   ```
 
-6. Run the development server:
-```bash
-flask run
-```
+6. Create an admin user:
+   ```bash
+   flask create-admin admin@rdlearning.com password123
+   ```
 
-## Project Structure
+7. Run the development server:
+   ```bash
+   flask run
+   ```
 
-```
-rd-learning-planet/
-├── app/
-│   ├── static/
-│   │   ├── css/
-│   │   ├── js/
-│   │   └── images/
-│   ├── templates/
-│   │   ├── admin/
-│   │   ├── teacher/
-│   │   ├── student/
-│   │   └── parent/
-│   ├── models/
-│   └── utils/
-├── migrations/
-├── tests/
-├── venv/
-├── config.py
-├── requirements.txt
-└── run.py
-```
+The application will be available at `http://localhost:5000`
 
-## User Roles
+## Development
 
-### Admin
-- Full system access
-- User management
-- Content management
-- Fee management
-- Analytics access
+1. Run tests:
+   ```bash
+   flask test
+   ```
 
-### Teacher
-- Upload lectures
-- Create/evaluate tests
-- Respond to doubts
-- Track student performance
+2. Database migrations:
+   ```bash
+   flask db migrate -m "Migration message"
+   flask db upgrade
+   ```
 
-### Student
-- Watch lectures
-- Take tests
-- Ask doubts
-- View progress
+3. Shell context:
+   ```bash
+   flask shell
+   ```
 
-### Parent
-- View child's performance
-- Pay fees
-- Communicate with teachers
+## Deployment
+
+1. Set up production environment variables
+2. Configure PostgreSQL database
+3. Set up Redis server
+4. Configure email server
+5. Set up Stripe for payments
+6. Configure Firebase for notifications
+7. Run database migrations
+8. Start the application with gunicorn
 
 ## Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Contact
+## Support
 
-Your Name - your.email@example.com
-Project Link: https://github.com/yourusername/rd-learning-planet 
+For support, email support@rdlearning.com or create an issue in the repository. 

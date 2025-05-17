@@ -2,72 +2,72 @@ from datetime import datetime
 from app import db
 
 class Fee(db.Model):
+    __tablename__ = 'fees'
+    
     id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     amount = db.Column(db.Float, nullable=False)
-    month = db.Column(db.String(20), nullable=False)  # Format: "YYYY-MM"
-    due_date = db.Column(db.Date, nullable=False)
+    fee_type = db.Column(db.String(50), nullable=False)  # tuition, exam, material, etc.
+    description = db.Column(db.Text)
+    due_date = db.Column(db.DateTime, nullable=False)
     status = db.Column(db.String(20), default='pending')  # pending, paid, overdue
-    payment_mode = db.Column(db.String(20))  # online, cash
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    # Foreign Keys
-    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    # Payment tracking
+    amount_paid = db.Column(db.Float, default=0.0)
+    last_payment_date = db.Column(db.DateTime)
+    payment_method = db.Column(db.String(50))
+    transaction_id = db.Column(db.String(100))
+    
+    # Optional fields
+    academic_year = db.Column(db.String(20))
+    semester = db.Column(db.String(20))
+    discount = db.Column(db.Float, default=0.0)
+    late_fee = db.Column(db.Float, default=0.0)
     
     # Relationships
-    payments = db.relationship('Payment', backref='fee', lazy='dynamic')
+    payments = db.relationship('Payment', backref='fee', lazy=True)
     
-    def __init__(self, amount, month, due_date, student_id):
-        self.amount = amount
-        self.month = month
-        self.due_date = due_date
+    def __init__(self, student_id, amount, fee_type, due_date, **kwargs):
         self.student_id = student_id
+        self.amount = amount
+        self.fee_type = fee_type
+        self.due_date = due_date
+        for key, value in kwargs.items():
+            setattr(self, key, value)
     
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'amount': self.amount,
-            'month': self.month,
-            'due_date': self.due_date.isoformat(),
-            'status': self.status,
-            'payment_mode': self.payment_mode,
-            'student_id': self.student_id,
-            'created_at': self.created_at.isoformat(),
-            'updated_at': self.updated_at.isoformat()
-        }
+    @property
+    def balance(self):
+        """Calculate remaining balance"""
+        return self.amount + self.late_fee - self.amount_paid - self.discount
+    
+    def __repr__(self):
+        return f'<Fee {self.id}: {self.fee_type}>'
 
 class Payment(db.Model):
+    __tablename__ = 'payments'
+    
     id = db.Column(db.Integer, primary_key=True)
+    fee_id = db.Column(db.Integer, db.ForeignKey('fees.id'), nullable=False)
     amount = db.Column(db.Float, nullable=False)
-    payment_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    payment_mode = db.Column(db.String(20), nullable=False)  # online, cash
-    transaction_id = db.Column(db.String(100))  # For online payments
+    payment_date = db.Column(db.DateTime, default=datetime.utcnow)
+    payment_method = db.Column(db.String(50), nullable=False)
+    transaction_id = db.Column(db.String(100))
     status = db.Column(db.String(20), default='pending')  # pending, success, failed
-    receipt_number = db.Column(db.String(50))
-    remarks = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    # Foreign Keys
-    fee_id = db.Column(db.Integer, db.ForeignKey('fee.id'), nullable=False)
-    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    collected_by = db.Column(db.Integer, db.ForeignKey('user.id'))  # Admin who collected cash
+    # Payment metadata
+    payment_gateway = db.Column(db.String(50))
+    gateway_response = db.Column(db.Text)  # Store payment gateway response
+    receipt_url = db.Column(db.String(500))
     
-    def __init__(self, amount, payment_mode, fee_id, student_id):
-        self.amount = amount
-        self.payment_mode = payment_mode
+    def __init__(self, fee_id, amount, payment_method, **kwargs):
         self.fee_id = fee_id
-        self.student_id = student_id
+        self.amount = amount
+        self.payment_method = payment_method
+        for key, value in kwargs.items():
+            setattr(self, key, value)
     
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'amount': self.amount,
-            'payment_date': self.payment_date.isoformat(),
-            'payment_mode': self.payment_mode,
-            'transaction_id': self.transaction_id,
-            'status': self.status,
-            'receipt_number': self.receipt_number,
-            'remarks': self.remarks,
-            'fee_id': self.fee_id,
-            'student_id': self.student_id,
-            'collected_by': self.collected_by
-        } 
+    def __repr__(self):
+        return f'<Payment {self.id}: {self.amount}>' 

@@ -26,12 +26,25 @@ class User(UserMixin, db.Model):
     __tablename__ = 'users'
     
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False, index=True)
-    username = db.Column(db.String(64), unique=True, nullable=False, index=True)
-    password_hash = db.Column(db.String(128))
-    first_name = db.Column(db.String(64))
-    last_name = db.Column(db.String(64))
-    active = db.Column(db.Boolean, default=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password_hash = db.Column(db.String(255))
+    role = db.Column(db.String(20), nullable=False)  # admin, teacher, student, parent
+    first_name = db.Column(db.String(50))
+    last_name = db.Column(db.String(50))
+    phone = db.Column(db.String(15))
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    last_login = db.Column(db.DateTime)
+    
+    # Role-specific fields
+    # For students
+    grade = db.Column(db.Integer)  # Class 6-12
+    parent_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    
+    # For teachers
+    subjects = db.Column(db.String(255))  # Comma-separated list of subjects
+    qualifications = db.Column(db.String(255))
     
     # Profile info
     profile_image = db.Column(db.String(255))  # Path to profile image
@@ -39,7 +52,6 @@ class User(UserMixin, db.Model):
     address = db.Column(db.Text)
     
     # Timestamps
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     last_login_at = db.Column(db.DateTime)
     
@@ -47,31 +59,23 @@ class User(UserMixin, db.Model):
     roles = db.relationship('Role', secondary=user_roles, lazy='subquery',
                            backref=db.backref('users', lazy=True))
     
-    # Class-specific fields (based on role)
-    grade = db.Column(db.String(20))  # For students
-    subjects = db.Column(db.Text)  # For teachers, comma-separated list of subjects
-    
-    # Parent-student relationship
-    parent_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
-    children = db.relationship('User', backref=db.backref('parent', remote_side=[id]), lazy=True)
-    
-    # New fields
-    role = db.Column(db.String(20), nullable=False)  # admin, teacher, student, parent
-    phone = db.Column(db.String(20))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    last_login = db.Column(db.DateTime)
-    is_active = db.Column(db.Boolean, default=True)
-    
     # Relationships
-    lectures_created = db.relationship('Lecture', backref='author', lazy='dynamic')
-    tests_created = db.relationship('Test', backref='creator', lazy='dynamic')
-    test_results = db.relationship('Result', backref='student', lazy='dynamic')
-    doubts_asked = db.relationship('Doubt', backref='student', lazy='dynamic', foreign_keys='Doubt.student_id')
-    doubts_answered = db.relationship('Doubt', backref='teacher', lazy='dynamic', foreign_keys='Doubt.teacher_id')
+    students = db.relationship('User', backref=db.backref('parent', remote_side=[id]),
+                             foreign_keys='User.parent_id')
+    lectures = db.relationship('Lecture', backref='author', lazy=True)
+    doubts = db.relationship('Doubt', backref='student', lazy=True,
+                           foreign_keys='Doubt.student_id')
+    doubt_responses = db.relationship('Doubt', backref='teacher', lazy=True,
+                                    foreign_keys='Doubt.teacher_id')
+    test_results = db.relationship('TestResult', backref='student', lazy=True)
     fees = db.relationship('Fee', backref='student', lazy='dynamic')
     
-    def __init__(self, **kwargs):
-        super(User, self).__init__(**kwargs)
+    def __init__(self, email, username, role, **kwargs):
+        self.email = email
+        self.username = username
+        self.role = role
+        for key, value in kwargs.items():
+            setattr(self, key, value)
     
     def __repr__(self):
         return f'<User {self.username}>'

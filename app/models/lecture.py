@@ -31,94 +31,63 @@ class Course(db.Model):
         return len(self.lectures)
 
 class Lecture(db.Model):
-    """Model for lectures"""
     __tablename__ = 'lectures'
     
     id = db.Column(db.Integer, primary_key=True)
-    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=False)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text)
+    content = db.Column(db.Text)
+    subject = db.Column(db.String(50), nullable=False)
+    grade = db.Column(db.Integer, nullable=False)  # Class 6-12
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     video_url = db.Column(db.String(500))
-    subject = db.Column(db.String(100), nullable=False)
-    class_level = db.Column(db.String(20), nullable=False)  # e.g., "6", "7", "8"
-    duration = db.Column(db.Integer)  # in minutes
+    document_url = db.Column(db.String(500))
+    is_published = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    # Foreign Keys
-    teacher_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    # Metadata
+    duration = db.Column(db.Integer)  # Duration in minutes
+    difficulty_level = db.Column(db.String(20))  # beginner, intermediate, advanced
+    tags = db.Column(db.String(200))  # Comma-separated tags
     
     # Relationships
-    comments = db.relationship('LectureComment', backref='lecture', lazy='dynamic')
-    bookmarks = db.relationship('LectureBookmark', backref='lecture', lazy='dynamic')
-    views = db.relationship('LectureView', backref='lecture', lazy='dynamic')
+    comments = db.relationship('LectureComment', backref='lecture', lazy=True, cascade='all, delete-orphan')
+    views = db.relationship('LectureView', backref='lecture', lazy=True, cascade='all, delete-orphan')
     
-    def __init__(self, title, description, subject, class_level, teacher_id):
+    def __init__(self, title, subject, grade, author_id, **kwargs):
         self.title = title
-        self.description = description
         self.subject = subject
-        self.class_level = class_level
-        self.teacher_id = teacher_id
-    
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'title': self.title,
-            'description': self.description,
-            'video_url': self.video_url,
-            'subject': self.subject,
-            'class_level': self.class_level,
-            'duration': self.duration,
-            'teacher_id': self.teacher_id,
-            'created_at': self.created_at.isoformat(),
-            'updated_at': self.updated_at.isoformat()
-        }
+        self.grade = grade
+        self.author_id = author_id
+        for key, value in kwargs.items():
+            setattr(self, key, value)
     
     def __repr__(self):
         return f'<Lecture {self.title}>'
 
 class LectureComment(db.Model):
-    """Model for lecture comments"""
     __tablename__ = 'lecture_comments'
     
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    # Foreign Keys
     lecture_id = db.Column(db.Integer, db.ForeignKey('lectures.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Relationship
     user = db.relationship('User', backref='lecture_comments')
 
-class LectureBookmark(db.Model):
-    """Model for lecture bookmarks"""
-    __tablename__ = 'lecture_bookmarks'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    timestamp = db.Column(db.Integer)  # timestamp in seconds
-    note = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    # Foreign Keys
-    lecture_id = db.Column(db.Integer, db.ForeignKey('lectures.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    
-    # Relationship
-    user = db.relationship('User', backref='lecture_bookmarks')
-
 class LectureView(db.Model):
-    """Model for tracking lecture views"""
     __tablename__ = 'lecture_views'
     
     id = db.Column(db.Integer, primary_key=True)
-    view_date = db.Column(db.DateTime, default=datetime.utcnow)
-    watch_duration = db.Column(db.Integer)  # duration watched in seconds
-    
-    # Foreign Keys
     lecture_id = db.Column(db.Integer, db.ForeignKey('lectures.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    viewed_at = db.Column(db.DateTime, default=datetime.utcnow)
+    watch_duration = db.Column(db.Integer)  # Duration watched in seconds
+    completed = db.Column(db.Boolean, default=False)
     
     # Relationship
     user = db.relationship('User', backref='lecture_views')
