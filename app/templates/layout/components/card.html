@@ -1,0 +1,114 @@
+{% macro stats_card(title, value, icon, color="primary", subtitle=None) %}
+<div class="stats-card h-100">
+    <div class="d-flex align-items-center mb-3">
+        <div class="icon" style="background-color: rgba(var(--bs-{{ color }}-rgb), 0.1); color: var(--bs-{{ color }});">
+            <i class="{{ icon }}"></i>
+        </div>
+        <div class="ms-3">
+            <div class="label text-uppercase">{{ title }}</div>
+            <div class="number" style="color: var(--bs-{{ color }});">{{ value }}</div>
+            {% if subtitle %}
+                <div class="text-muted small">{{ subtitle }}</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro feature_card(title, description, icon, link_url=None, link_text=None) %}
+<div class="card h-100">
+    <div class="card-body">
+        <div class="feature-icon mb-3">
+            <i class="{{ icon }}"></i>
+        </div>
+        <h5 class="card-title">{{ title }}</h5>
+        <p class="card-text text-muted">{{ description }}</p>
+        {% if link_url and link_text %}
+            <a href="{{ link_url }}" class="btn btn-outline-primary">
+                {{ link_text }}
+                <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        {% endif %}
+    </div>
+</div>
+{% endmacro %}
+
+{% macro action_card(title, actions=[], footer=None) %}
+<div class="card h-100">
+    <div class="card-header bg-transparent">
+        <h5 class="card-title mb-0">{{ title }}</h5>
+    </div>
+    <div class="card-body">
+        <div class="list-group list-group-flush">
+            {% for action in actions %}
+                <a href="{{ action.url }}" class="list-group-item list-group-item-action d-flex align-items-center">
+                    {% if action.icon %}
+                        <i class="{{ action.icon }} me-3 text-{{ action.color|default('primary') }}"></i>
+                    {% endif %}
+                    <div>
+                        <div class="fw-medium">{{ action.text }}</div>
+                        {% if action.description %}
+                            <div class="text-muted small">{{ action.description }}</div>
+                        {% endif %}
+                    </div>
+                    <i class="fas fa-chevron-right ms-auto"></i>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% if footer %}
+        <div class="card-footer bg-transparent">
+            {{ footer }}
+        </div>
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro data_card(title, data=[], actions=None) %}
+<div class="card h-100">
+    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">{{ title }}</h5>
+        {% if actions %}
+            <div class="dropdown">
+                <button class="btn btn-link text-muted p-0" type="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                    {% for action in actions %}
+                        <li>
+                            <a class="dropdown-item" href="{{ action.url }}">
+                                {% if action.icon %}
+                                    <i class="{{ action.icon }} me-2"></i>
+                                {% endif %}
+                                {{ action.text }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        {% for header in data[0].keys() %}
+                            <th>{{ header|title }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data %}
+                        <tr>
+                            {% for value in row.values() %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endmacro %} 

@@ -118,10 +118,17 @@
                         </div>
                         
                         <div class="mb-4 form-check">
-                            <input type="checkbox" class="form-check-input" id="termsCheck" required>
-                            <label class="form-check-label" for="termsCheck">
-                                I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                            {{ form.accept_tos(class="form-check-input" + (" is-invalid" if form.accept_tos.errors else "")) }}
+                            <label class="form-check-label" for="{{ form.accept_tos.id }}">
+                                I accept the <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a>
                             </label>
+                            {% if form.accept_tos.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.accept_tos.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         </div>
                         
                         <div class="d-grid">

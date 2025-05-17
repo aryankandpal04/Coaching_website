@@ -1,0 +1,126 @@
+{% extends "layout/base.html" %}
+
+{% block content %}
+<!-- Profile Hero Section -->
+<section class="hero-small bg-primary text-white py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="fw-bold mb-4">My Profile</h1>
+                <p class="lead">Manage your personal information and preferences</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    {% if user.profile_image %}
+                        <img src="{{ url_for('static', filename='uploads/' + user.profile_image) }}" 
+                             class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                    {% else %}
+                        <div class="avatar-circle mb-3 mx-auto bg-primary" style="width: 150px; height: 150px;">
+                            <span class="avatar-initials text-white" style="font-size: 3rem;">
+                                {{ user.username[0]|upper }}
+                            </span>
+                        </div>
+                    {% endif %}
+                    <h4 class="mb-1">{{ user.full_name }}</h4>
+                    <p class="text-muted mb-3">{{ user.role|title }}</p>
+                    <div class="d-grid">
+                        <label for="profile_image_upload" class="btn btn-outline-primary">
+                            <i class="fas fa-camera me-2"></i>Change Photo
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="card-title mb-4">Profile Information</h5>
+                    <form method="POST" enctype="multipart/form-data" id="profile-form">
+                        <input type="file" name="profile_image" id="profile_image_upload" class="d-none" accept="image/*">
+                        
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">First Name</label>
+                                <input type="text" name="first_name" class="form-control" 
+                                       value="{{ user.first_name }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" name="last_name" class="form-control" 
+                                       value="{{ user.last_name }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control bg-light" value="{{ user.email }}" readonly>
+                            <small class="text-muted">Email cannot be changed</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" name="phone" class="form-control" value="{{ user.phone }}">
+                        </div>
+                        
+                        {% if user.is_student %}
+                            <div class="mb-3">
+                                <label class="form-label">Grade</label>
+                                <select name="grade" class="form-select" required>
+                                    {% for grade in range(6, 13) %}
+                                        <option value="{{ grade }}" 
+                                                {% if user.grade == grade %}selected{% endif %}>
+                                            Class {{ grade }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        {% endif %}
+                        
+                        {% if user.is_teacher %}
+                            <div class="mb-3">
+                                <label class="form-label">Subjects</label>
+                                <input type="text" name="subjects" class="form-control" 
+                                       value="{{ user.subjects }}" placeholder="e.g. Mathematics, Physics">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Qualifications</label>
+                                <input type="text" name="qualifications" class="form-control" 
+                                       value="{{ user.qualifications }}" placeholder="e.g. M.Sc, B.Ed">
+                            </div>
+                        {% endif %}
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Update Profile
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle profile image upload
+    const profileImageUpload = document.getElementById('profile_image_upload');
+    profileImageUpload.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            document.getElementById('profile-form').submit();
+        }
+    });
+});
+</script>
+{% endblock %} 

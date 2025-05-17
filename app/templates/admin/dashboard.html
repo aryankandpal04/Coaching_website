@@ -1,0 +1,153 @@
+{% extends "layout/base.html" %}
+{% from "layout/components/page_header.html" import render_header %}
+{% from "layout/components/card.html" import stats_card, action_card, data_card %}
+
+{% block title %}Admin Dashboard - RD Learning Planet{% endblock %}
+
+{% block content %}
+    {{ render_header(
+        title="Admin Dashboard",
+        breadcrumbs=[
+            {"text": "Admin", "url": url_for('admin.dashboard')},
+            {"text": "Dashboard"}
+        ]
+    ) }}
+
+    <!-- Stats Overview -->
+    <div class="row g-4 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            {{ stats_card(
+                title="Total Students",
+                value=stats.total_students,
+                icon="fas fa-user-graduate",
+                color="primary",
+                subtitle="Active students"
+            ) }}
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            {{ stats_card(
+                title="Total Teachers",
+                value=stats.total_teachers,
+                icon="fas fa-chalkboard-teacher",
+                color="success",
+                subtitle="Active teachers"
+            ) }}
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            {{ stats_card(
+                title="Total Revenue",
+                value="₹" + "{:,.2f}".format(stats.total_revenue),
+                icon="fas fa-money-bill-wave",
+                color="info",
+                subtitle="This month"
+            ) }}
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            {{ stats_card(
+                title="Pending Doubts",
+                value=stats.pending_doubts,
+                icon="fas fa-question-circle",
+                color="warning",
+                subtitle="Requires attention"
+            ) }}
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Quick Actions -->
+        <div class="col-md-6 col-xl-4">
+            {{ action_card(
+                title="Quick Actions",
+                actions=[
+                    {
+                        "url": url_for('admin.add_user'),
+                        "icon": "fas fa-user-plus",
+                        "text": "Add New User",
+                        "description": "Create student, teacher, or parent account",
+                        "color": "primary"
+                    },
+                    {
+                        "url": url_for('admin.add_lecture'),
+                        "icon": "fas fa-book",
+                        "text": "Create Lecture",
+                        "description": "Add new lecture or course material",
+                        "color": "success"
+                    },
+                    {
+                        "url": url_for('admin.add_test'),
+                        "icon": "fas fa-file-alt",
+                        "text": "Create Test",
+                        "description": "Add new test or assessment",
+                        "color": "info"
+                    },
+                    {
+                        "url": url_for('admin.fee_collection'),
+                        "icon": "fas fa-money-check",
+                        "text": "Fee Collection",
+                        "description": "Manage student fee payments",
+                        "color": "warning"
+                    }
+                ]
+            ) }}
+        </div>
+
+        <!-- Recent Activities -->
+        <div class="col-md-6 col-xl-8">
+            {{ data_card(
+                title="Recent Activities",
+                data=recent_activities,
+                actions=[
+                    {
+                        "url": url_for('admin.activities'),
+                        "icon": "fas fa-list",
+                        "text": "View All Activities"
+                    },
+                    {
+                        "url": url_for('admin.activity_log'),
+                        "icon": "fas fa-download",
+                        "text": "Download Log"
+                    }
+                ]
+            ) }}
+        </div>
+
+        <!-- Upcoming Tests -->
+        <div class="col-md-6">
+            {{ data_card(
+                title="Upcoming Tests",
+                data=upcoming_tests,
+                actions=[
+                    {
+                        "url": url_for('admin.tests'),
+                        "icon": "fas fa-calendar",
+                        "text": "View All Tests"
+                    }
+                ]
+            ) }}
+        </div>
+
+        <!-- Fee Collection Status -->
+        <div class="col-md-6">
+            {{ data_card(
+                title="Fee Collection Status",
+                data=fee_status,
+                actions=[
+                    {
+                        "url": url_for('admin.fees'),
+                        "icon": "fas fa-money-bill",
+                        "text": "View All Fees"
+                    }
+                ]
+            ) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Initialize any dashboard-specific JavaScript here
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add any necessary JavaScript functionality
+    });
+</script>
+{% endblock %} 

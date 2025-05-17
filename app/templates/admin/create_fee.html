@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Create New Fee</h1>
+        <a href="{{ url_for('admin.fees') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Fees
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="POST">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="student" class="form-label">Student</label>
+                            <select class="form-select" id="student" name="student_id" required>
+                                <option value="">Select Student</option>
+                                {% for student in students %}
+                                <option value="{{ student.id }}">{{ student.full_name }} - Grade {{ student.grade }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="fee_type" class="form-label">Fee Type</label>
+                            <select class="form-select" id="fee_type" name="fee_type" required>
+                                <option value="">Select Fee Type</option>
+                                <option value="tuition">Tuition Fee</option>
+                                <option value="exam">Examination Fee</option>
+                                <option value="lab">Laboratory Fee</option>
+                                <option value="transport">Transport Fee</option>
+                                <option value="other">Other Fee</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Amount (₹)</label>
+                            <input type="number" class="form-control" id="amount" name="amount" min="0" step="0.01" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="due_date" class="form-label">Due Date</label>
+                            <input type="date" class="form-control" id="due_date" name="due_date" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="academic_year" class="form-label">Academic Year</label>
+                            <select class="form-select" id="academic_year" name="academic_year" required>
+                                <option value="">Select Academic Year</option>
+                                {% for year in academic_years %}
+                                <option value="{{ year }}">{{ year }}-{{ year + 1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="term" class="form-label">Term</label>
+                            <select class="form-select" id="term" name="term" required>
+                                <option value="">Select Term</option>
+                                <option value="1">Term 1</option>
+                                <option value="2">Term 2</option>
+                                <option value="3">Term 3</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="is_recurring" name="is_recurring">
+                            <label class="form-check-label" for="is_recurring">
+                                Recurring Fee
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="is_mandatory" name="is_mandatory" checked>
+                            <label class="form-check-label" for="is_mandatory">
+                                Mandatory Fee
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="recurring_options" class="d-none">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="recurring_frequency" class="form-label">Recurring Frequency</label>
+                                <select class="form-select" id="recurring_frequency" name="recurring_frequency">
+                                    <option value="monthly">Monthly</option>
+                                    <option value="quarterly">Quarterly</option>
+                                    <option value="yearly">Yearly</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="recurring_end_date" class="form-label">Recurring End Date</label>
+                                <input type="date" class="form-control" id="recurring_end_date" name="recurring_end_date">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Create Fee</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const isRecurring = document.getElementById('is_recurring');
+    const recurringOptions = document.getElementById('recurring_options');
+
+    isRecurring.addEventListener('change', function() {
+        if (this.checked) {
+            recurringOptions.classList.remove('d-none');
+        } else {
+            recurringOptions.classList.add('d-none');
+        }
+    });
+
+    // Set minimum date for due date to today
+    const dueDateInput = document.getElementById('due_date');
+    const today = new Date().toISOString().split('T')[0];
+    dueDateInput.min = today;
+
+    // Set minimum date for recurring end date to due date
+    const recurringEndDate = document.getElementById('recurring_end_date');
+    dueDateInput.addEventListener('change', function() {
+        recurringEndDate.min = this.value;
+    });
+});
+</script>
+{% endblock %} 

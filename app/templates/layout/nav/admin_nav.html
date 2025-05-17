@@ -1,0 +1,32 @@
+<li class="nav-item">
+    <a class="nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}" href="{{ url_for('admin.dashboard') }}">
+        <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+    </a>
+</li>
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+        <i class="fas fa-cogs me-1"></i>Management
+    </a>
+    <ul class="dropdown-menu shadow-sm border-0">
+        <li><a class="dropdown-item" href="{{ url_for('admin.users') }}">
+            <i class="fas fa-users me-2"></i>Users
+        </a></li>
+        <li><a class="dropdown-item" href="{{ url_for('admin.lectures') }}">
+            <i class="fas fa-book me-2"></i>Lectures
+        </a></li>
+        <li><a class="dropdown-item" href="{{ url_for('admin.tests') }}">
+            <i class="fas fa-file-alt me-2"></i>Tests
+        </a></li>
+        <li><a class="dropdown-item" href="{{ url_for('admin.doubts') }}">
+            <i class="fas fa-question-circle me-2"></i>Doubts
+        </a></li>
+        <li><a class="dropdown-item" href="{{ url_for('admin.fees') }}">
+            <i class="fas fa-money-bill me-2"></i>Fees
+        </a></li>
+    </ul>
+</li>
+<li class="nav-item">
+    <a class="nav-link {% if request.endpoint == 'admin.reports' %}active{% endif %}" href="{{ url_for('admin.reports') }}">
+        <i class="fas fa-chart-bar me-1"></i>Reports
+    </a>
+</li> 

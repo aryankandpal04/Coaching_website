@@ -32,8 +32,8 @@ class Doubt(db.Model):
     responses = db.relationship('DoubtResponse', backref='doubt', lazy=True, cascade='all, delete-orphan')
     
     # User relationships
-    student = db.relationship('User', foreign_keys=[student_id], backref='doubts_asked')
-    teacher = db.relationship('User', foreign_keys=[teacher_id], backref='doubts_assigned')
+    student = db.relationship('User', foreign_keys=[student_id], back_populates='student_doubts')
+    teacher = db.relationship('User', foreign_keys=[teacher_id], back_populates='teacher_doubts')
     
     def __init__(self, title, description, subject, grade, student_id, **kwargs):
         self.title = title

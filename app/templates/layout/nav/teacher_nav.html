@@ -1,0 +1,25 @@
+<li class="nav-item">
+    <a class="nav-link {% if request.endpoint == 'teacher.dashboard' %}active{% endif %}" href="{{ url_for('teacher.dashboard') }}">
+        <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link {% if request.endpoint == 'teacher.lectures' %}active{% endif %}" href="{{ url_for('teacher.lectures') }}">
+        <i class="fas fa-book me-1"></i>My Lectures
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link {% if request.endpoint == 'teacher.tests' %}active{% endif %}" href="{{ url_for('teacher.tests') }}">
+        <i class="fas fa-file-alt me-1"></i>My Tests
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link {% if request.endpoint == 'teacher.doubts' %}active{% endif %}" href="{{ url_for('teacher.doubts') }}">
+        <i class="fas fa-question-circle me-1"></i>Student Doubts
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link {% if request.endpoint == 'teacher.assignments' %}active{% endif %}" href="{{ url_for('teacher.assignments') }}">
+        <i class="fas fa-tasks me-1"></i>Assignments
+    </a>
+</li> 

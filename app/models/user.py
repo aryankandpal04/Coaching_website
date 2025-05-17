@@ -63,10 +63,22 @@ class User(UserMixin, db.Model):
     students = db.relationship('User', backref=db.backref('parent', remote_side=[id]),
                              foreign_keys='User.parent_id')
     lectures = db.relationship('Lecture', backref='author', lazy=True)
-    doubts = db.relationship('Doubt', backref='student', lazy=True,
-                           foreign_keys='Doubt.student_id')
-    doubt_responses = db.relationship('Doubt', backref='teacher', lazy=True,
-                                    foreign_keys='Doubt.teacher_id')
+    doubts_created = db.relationship('Doubt', 
+                                   foreign_keys='Doubt.student_id',
+                                   back_populates='student',
+                                   overlaps="student_doubts")
+    doubts_assigned = db.relationship('Doubt',
+                                    foreign_keys='Doubt.teacher_id',
+                                    back_populates='teacher',
+                                    overlaps="teacher_doubts")
+    student_doubts = db.relationship('Doubt',
+                                   foreign_keys='Doubt.student_id',
+                                   back_populates='student',
+                                   overlaps="doubts_created")
+    teacher_doubts = db.relationship('Doubt',
+                                   foreign_keys='Doubt.teacher_id',
+                                   back_populates='teacher',
+                                   overlaps="doubts_assigned")
     test_results = db.relationship('TestResult', backref='student', lazy=True)
     fees = db.relationship('Fee', backref='student', lazy='dynamic')
     
@@ -90,7 +102,7 @@ class User(UserMixin, db.Model):
     
     def has_role(self, role_name):
         """Check if the user has the specified role"""
-        return any(role.name == role_name for role in self.roles)
+        return role_name == self.role
     
     @property
     def full_name(self):
@@ -100,33 +112,21 @@ class User(UserMixin, db.Model):
     @property
     def is_admin(self):
         """Check if the user is an admin"""
-        return self.has_role('admin')
+        return self.role == 'admin'
     
     @property
     def is_teacher(self):
         """Check if the user is a teacher"""
-        return self.has_role('teacher')
+        return self.role == 'teacher'
     
     @property
     def is_student(self):
         """Check if the user is a student"""
-        return self.has_role('student')
+        return self.role == 'student'
     
     @property
     def is_parent(self):
         """Check if the user is a parent"""
-        return self.has_role('parent')
-    
-    def is_admin(self):
-        return self.role == 'admin'
-    
-    def is_teacher(self):
-        return self.role == 'teacher'
-    
-    def is_student(self):
-        return self.role == 'student'
-    
-    def is_parent(self):
         return self.role == 'parent'
     
     def get_full_name(self):

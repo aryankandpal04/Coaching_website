@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">My Children</h1>
+    
+    <div class="row">
+        {% for child in children %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="flex-shrink-0">
+                            {% if child.profile_image %}
+                            <img src="{{ url_for('static', filename=child.profile_image) }}" 
+                                 class="rounded-circle" alt="Profile" width="60" height="60">
+                            {% else %}
+                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" 
+                                 style="width: 60px; height: 60px;">
+                                {{ child.first_name[0] }}{{ child.last_name[0] }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="card-title mb-0">{{ child.full_name }}</h5>
+                            <p class="text-muted mb-0">Grade {{ child.grade }}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Academic Performance -->
+                    <div class="mb-4">
+                        <h6>Academic Performance</h6>
+                        <div class="progress mb-2" style="height: 20px;">
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: {{ child.performance }}%"
+                                 aria-valuenow="{{ child.performance }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ child.performance }}%
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Attendance -->
+                    <div class="mb-4">
+                        <h6>Attendance</h6>
+                        <div class="progress mb-2" style="height: 20px;">
+                            <div class="progress-bar bg-success" role="progressbar" 
+                                 style="width: {{ child.attendance }}%"
+                                 aria-valuenow="{{ child.attendance }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ child.attendance }}%
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Stats -->
+                    <div class="row text-center mb-4">
+                        <div class="col">
+                            <h6 class="text-muted">Tests Taken</h6>
+                            <h5>{{ child.tests_taken }}/{{ child.total_tests }}</h5>
+                        </div>
+                        <div class="col">
+                            <h6 class="text-muted">Assignments</h6>
+                            <h5>{{ child.completed_assignments }}/{{ child.total_assignments }}</h5>
+                        </div>
+                        <div class="col">
+                            <h6 class="text-muted">Due Fees</h6>
+                            <h5>₹{{ child.pending_fees }}</h5>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('parent.child_performance', child_id=child.id) }}" 
+                           class="btn btn-primary">View Detailed Performance</a>
+                        <a href="{{ url_for('parent.child_attendance', child_id=child.id) }}" 
+                           class="btn btn-outline-primary">View Attendance Details</a>
+                        <a href="{{ url_for('parent.child_fees', child_id=child.id) }}" 
+                           class="btn btn-outline-primary">View Fee Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

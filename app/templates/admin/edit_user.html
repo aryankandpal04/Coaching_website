@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Edit User</h1>
+        <a href="{{ url_for('admin.users') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Users
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="POST">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="first_name" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" 
+                                   value="{{ user.first_name }}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="last_name" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" 
+                                   value="{{ user.last_name }}" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" name="email" 
+                           value="{{ user.email }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" 
+                           value="{{ user.username }}" required>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="password" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="password" name="password" 
+                                   placeholder="Leave blank to keep current password">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="confirm_password" class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password"
+                                   placeholder="Leave blank to keep current password">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="role" class="form-label">Role</label>
+                    <select class="form-select" id="role" name="role" required>
+                        <option value="">Select Role</option>
+                        <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+                        <option value="teacher" {% if user.role == 'teacher' %}selected{% endif %}>Teacher</option>
+                        <option value="student" {% if user.role == 'student' %}selected{% endif %}>Student</option>
+                        <option value="parent" {% if user.role == 'parent' %}selected{% endif %}>Parent</option>
+                    </select>
+                </div>
+
+                <div id="student_fields" class="{% if user.role != 'student' %}d-none{% endif %}">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="grade" class="form-label">Grade</label>
+                                <select class="form-select" id="grade" name="grade">
+                                    <option value="">Select Grade</option>
+                                    {% for grade in range(6, 13) %}
+                                    <option value="{{ grade }}" {% if user.grade == grade %}selected{% endif %}>
+                                        Grade {{ grade }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="section" class="form-label">Section</label>
+                                <select class="form-select" id="section" name="section">
+                                    <option value="">Select Section</option>
+                                    <option value="A" {% if user.section == 'A' %}selected{% endif %}>Section A</option>
+                                    <option value="B" {% if user.section == 'B' %}selected{% endif %}>Section B</option>
+                                    <option value="C" {% if user.section == 'C' %}selected{% endif %}>Section C</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="teacher_fields" class="{% if user.role != 'teacher' %}d-none{% endif %}">
+                    <div class="mb-3">
+                        <label for="subjects" class="form-label">Subjects</label>
+                        <select class="form-select" id="subjects" name="subjects[]" multiple>
+                            <option value="mathematics" {% if 'mathematics' in user.subjects %}selected{% endif %}>Mathematics</option>
+                            <option value="physics" {% if 'physics' in user.subjects %}selected{% endif %}>Physics</option>
+                            <option value="chemistry" {% if 'chemistry' in user.subjects %}selected{% endif %}>Chemistry</option>
+                            <option value="biology" {% if 'biology' in user.subjects %}selected{% endif %}>Biology</option>
+                        </select>
+                        <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple subjects</small>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input type="tel" class="form-control" id="phone" name="phone" value="{{ user.phone }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address</label>
+                    <textarea class="form-control" id="address" name="address" rows="3">{{ user.address }}</textarea>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="is_active" name="is_active" 
+                           {% if user.is_active %}checked{% endif %}>
+                    <label class="form-check-label" for="is_active">
+                        Account is active
+                    </label>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Update User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const roleSelect = document.getElementById('role');
+    const studentFields = document.getElementById('student_fields');
+    const teacherFields = document.getElementById('teacher_fields');
+
+    roleSelect.addEventListener('change', function() {
+        studentFields.classList.add('d-none');
+        teacherFields.classList.add('d-none');
+
+        if (this.value === 'student') {
+            studentFields.classList.remove('d-none');
+        } else if (this.value === 'teacher') {
+            teacherFields.classList.remove('d-none');
+        }
+    });
+
+    // Password validation
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirm_password');
+    const form = document.querySelector('form');
+
+    form.addEventListener('submit', function(e) {
+        if (password.value || confirmPassword.value) {
+            if (password.value !== confirmPassword.value) {
+                e.preventDefault();
+                alert('Passwords do not match!');
+            }
+        }
+    });
+});
+</script>
+{% endblock %} 

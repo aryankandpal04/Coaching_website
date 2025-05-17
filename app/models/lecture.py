@@ -28,7 +28,7 @@ class Course(db.Model):
     @property
     def lecture_count(self):
         """Get the number of lectures in the course"""
-        return len(self.lectures)
+        return self.lectures.count()
 
 class Lecture(db.Model):
     __tablename__ = 'lectures'
@@ -40,6 +40,7 @@ class Lecture(db.Model):
     subject = db.Column(db.String(50), nullable=False)
     grade = db.Column(db.Integer, nullable=False)  # Class 6-12
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'))  # Added foreign key
     video_url = db.Column(db.String(500))
     document_url = db.Column(db.String(500))
     is_published = db.Column(db.Boolean, default=False)

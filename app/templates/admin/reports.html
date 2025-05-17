@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Reports & Analytics</h1>
+
+    <!-- Report Categories -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Academic Reports</h5>
+                    <p class="card-text">{{ academic_reports_count }} Reports</p>
+                    <a href="#academic" class="btn btn-light">View Details</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Financial Reports</h5>
+                    <p class="card-text">{{ financial_reports_count }} Reports</p>
+                    <a href="#financial" class="btn btn-light">View Details</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Attendance Reports</h5>
+                    <p class="card-text">{{ attendance_reports_count }} Reports</p>
+                    <a href="#attendance" class="btn btn-light">View Details</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Performance Reports</h5>
+                    <p class="card-text">{{ performance_reports_count }} Reports</p>
+                    <a href="#performance" class="btn btn-light">View Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Academic Reports Section -->
+    <section id="academic" class="mb-5">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">Academic Reports</h3>
+                <button class="btn btn-light">Generate New Report</button>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Grade-wise Performance Analysis</h5>
+                            <small>Last 30 days</small>
+                        </div>
+                        <p class="mb-1">Comprehensive analysis of student performance across all grades</p>
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Subject-wise Progress Report</h5>
+                            <small>Last quarter</small>
+                        </div>
+                        <p class="mb-1">Detailed progress report for each subject</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Financial Reports Section -->
+    <section id="financial" class="mb-5">
+        <div class="card">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">Financial Reports</h3>
+                <button class="btn btn-light">Generate New Report</button>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Fee Collection Summary</h5>
+                            <small>Current month</small>
+                        </div>
+                        <p class="mb-1">Overview of fee collection and pending payments</p>
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Revenue Analysis</h5>
+                            <small>Year to date</small>
+                        </div>
+                        <p class="mb-1">Detailed analysis of revenue streams</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Attendance Reports Section -->
+    <section id="attendance" class="mb-5">
+        <div class="card">
+            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">Attendance Reports</h3>
+                <button class="btn btn-light">Generate New Report</button>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Daily Attendance Summary</h5>
+                            <small>Today</small>
+                        </div>
+                        <p class="mb-1">Overview of today's attendance across all classes</p>
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Monthly Attendance Analysis</h5>
+                            <small>Current month</small>
+                        </div>
+                        <p class="mb-1">Detailed monthly attendance patterns</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Performance Reports Section -->
+    <section id="performance" class="mb-5">
+        <div class="card">
+            <div class="card-header bg-warning text-white d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">Performance Reports</h3>
+                <button class="btn btn-light">Generate New Report</button>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Test Performance Analysis</h5>
+                            <small>Last quarter</small>
+                        </div>
+                        <p class="mb-1">Comprehensive analysis of test results</p>
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">Student Progress Tracking</h5>
+                            <small>Academic year</small>
+                        </div>
+                        <p class="mb-1">Individual student progress tracking</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scroll to sections
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+});
+</script>
+{% endblock %} 

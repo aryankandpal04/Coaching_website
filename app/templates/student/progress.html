@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">My Progress</h1>
+    
+    <!-- Overall Performance Card -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Overall Performance</h5>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h6>Average Score</h6>
+                        <h2>{{ overall_average }}%</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h6>Attendance</h6>
+                        <h2>{{ attendance }}%</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h6>Assignments Completed</h6>
+                        <h2>{{ assignments_completed }}/{{ total_assignments }}</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h6>Tests Taken</h6>
+                        <h2>{{ tests_taken }}/{{ total_tests }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Subject-wise Performance -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Subject-wise Performance</h5>
+            {% for subject in subjects %}
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6>{{ subject.name }}</h6>
+                    <span class="badge bg-primary">{{ subject.average }}%</span>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: {{ subject.average }}%"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Recent Performance -->
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Recent Performance</h5>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Subject</th>
+                            <th>Type</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for activity in recent_activities %}
+                        <tr>
+                            <td>{{ activity.date.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ activity.subject }}</td>
+                            <td>{{ activity.type }}</td>
+                            <td>{{ activity.score }}%</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

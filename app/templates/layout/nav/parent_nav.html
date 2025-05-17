@@ -1,0 +1,25 @@
+<li class="nav-item">
+    <a class="nav-link {% if request.endpoint == 'parent.dashboard' %}active{% endif %}" href="{{ url_for('parent.dashboard') }}">
+        <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link {% if request.endpoint == 'parent.progress' %}active{% endif %}" href="{{ url_for('parent.progress') }}">
+        <i class="fas fa-chart-line me-1"></i>Child's Progress
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link {% if request.endpoint == 'parent.attendance' %}active{% endif %}" href="{{ url_for('parent.attendance') }}">
+        <i class="fas fa-calendar-check me-1"></i>Attendance
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link {% if request.endpoint == 'parent.fees' %}active{% endif %}" href="{{ url_for('parent.fees') }}">
+        <i class="fas fa-money-bill me-1"></i>Fee Details
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link {% if request.endpoint == 'parent.messages' %}active{% endif %}" href="{{ url_for('parent.messages') }}">
+        <i class="fas fa-envelope me-1"></i>Messages
+    </a>
+</li> 

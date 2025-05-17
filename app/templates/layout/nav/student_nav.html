@@ -1,0 +1,30 @@
+<li class="nav-item">
+    <a class="nav-link {% if request.endpoint == 'student.dashboard' %}active{% endif %}" href="{{ url_for('student.dashboard') }}">
+        <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link {% if request.endpoint == 'student.lectures' %}active{% endif %}" href="{{ url_for('student.lectures') }}">
+        <i class="fas fa-book me-1"></i>My Lectures
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link {% if request.endpoint == 'student.tests' %}active{% endif %}" href="{{ url_for('student.tests') }}">
+        <i class="fas fa-file-alt me-1"></i>My Tests
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link {% if request.endpoint == 'student.assignments' %}active{% endif %}" href="{{ url_for('student.assignments') }}">
+        <i class="fas fa-tasks me-1"></i>Assignments
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link {% if request.endpoint == 'student.doubts' %}active{% endif %}" href="{{ url_for('student.doubts') }}">
+        <i class="fas fa-question-circle me-1"></i>My Doubts
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link {% if request.endpoint == 'student.fees' %}active{% endif %}" href="{{ url_for('student.fees') }}">
+        <i class="fas fa-money-bill me-1"></i>Fees
+    </a>
+</li> 

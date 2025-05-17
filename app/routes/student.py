@@ -13,7 +13,7 @@ def student_required(f):
     """Decorator to check if current user is a student"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not current_user.is_authenticated or not current_user.is_student():
+        if not current_user.is_authenticated or not current_user.is_student:
             flash('Access denied. Student privileges required.', 'error')
             return redirect(url_for('main.index'))
         return f(*args, **kwargs)
@@ -23,6 +23,7 @@ def student_required(f):
 @login_required
 @student_required
 def dashboard():
+    """Student dashboard showing their statistics"""
     lectures_viewed = LectureView.query.filter_by(user_id=current_user.id).count()
     tests_taken = TestResult.query.filter_by(student_id=current_user.id).count()
     pending_doubts = Doubt.query.filter_by(student_id=current_user.id, status='pending').count()

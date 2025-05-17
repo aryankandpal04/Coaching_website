@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
+from functools import wraps
 from app.models.lecture import Lecture
 from app.models.test import Test
 from app.models.doubt import Doubt
@@ -9,8 +10,9 @@ teacher_bp = Blueprint('teacher', __name__)
 
 def teacher_required(f):
     """Decorator to check if current user is a teacher"""
+    @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not current_user.is_authenticated or not current_user.is_teacher():
+        if not current_user.is_authenticated or not current_user.is_teacher:
             flash('Access denied. Teacher privileges required.', 'error')
             return redirect(url_for('main.index'))
         return f(*args, **kwargs)

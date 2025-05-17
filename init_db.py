@@ -3,8 +3,8 @@ import sys
 import logging
 from pathlib import Path
 from app import create_app, db
-from app.models.user import User
-from app.models.lecture import Lecture, LectureComment, LectureView
+from app.models.user import User, Role
+from app.models.lecture import Course, Lecture, LectureComment, LectureView
 from app.models.test import Test, Question, TestResult
 from app.models.doubt import Doubt, DoubtResponse
 from app.models.fee import Fee, Payment
@@ -30,14 +30,17 @@ else:
     os.chmod(instance_path, 0o777)
 
 def init_db():
+    """Initialize the database with tables and sample data"""
     app = create_app()
+    
     with app.app_context():
-        # Create all tables
+        logger.info("Creating database tables...")
         db.create_all()
         
         # Check if admin user exists
         admin = User.query.filter_by(email='admin@rdlearning.com').first()
         if not admin:
+            logger.info("Creating initial users...")
             # Create admin user
             admin = User(
                 email='admin@rdlearning.com',
@@ -47,7 +50,7 @@ def init_db():
                 last_name='User',
                 is_active=True
             )
-            admin.set_password('admin123')  # Set a secure password in production
+            admin.set_password('admin123')
             db.session.add(admin)
             
             # Create test teacher account
@@ -89,73 +92,15 @@ def init_db():
             parent.set_password('parent123')
             db.session.add(parent)
             
-            # Link student to parent
-            student.parent_id = parent.id
-            
-            # Create sample lecture
-            lecture = Lecture(
-                title='Introduction to Algebra',
-                description='Basic concepts of algebra and its applications',
-                subject='Mathematics',
-                grade=10,
-                author_id=teacher.id,
-                content='Learn about variables, expressions, and equations...',
-                video_url='https://example.com/intro-algebra.mp4',
-                duration=45,
-                difficulty_level='beginner',
-                is_published=True
-            )
-            db.session.add(lecture)
-            
-            # Create sample test
-            test = Test(
-                title='Algebra Basics Test',
-                description='Test your understanding of basic algebra concepts',
-                subject='Mathematics',
-                grade=10,
-                creator_id=teacher.id,
-                duration=60,
-                total_marks=50,
-                passing_marks=25,
-                is_published=True
-            )
-            db.session.add(test)
-            
-            # Create sample questions
-            question1 = Question(
-                test_id=1,
-                question_text='What is the value of x in 2x + 5 = 15?',
-                question_type='mcq',
-                marks=5,
-                correct_answer='5'
-            )
-            question1.set_options(['3', '4', '5', '6'])
-            db.session.add(question1)
-            
-            # Create sample doubt
-            doubt = Doubt(
-                title='Help with Quadratic Equations',
-                description='I am having trouble solving quadratic equations...',
-                subject='Mathematics',
-                grade=10,
-                student_id=student.id,
-                priority='normal'
-            )
-            db.session.add(doubt)
-            
-            # Create sample fee
-            fee = Fee(
-                student_id=student.id,
-                amount=5000.0,
-                fee_type='tuition',
-                due_date=datetime(2024, 5, 1),
-                academic_year='2024-25',
-                semester='Spring'
-            )
-            db.session.add(fee)
-            
-            db.session.commit()
-            print('Database initialized with sample data!')
+            try:
+                db.session.commit()
+                logger.info("Database initialized successfully!")
+            except Exception as e:
+                db.session.rollback()
+                logger.error(f"Error initializing database: {str(e)}")
+                raise
+        else:
+            logger.info("Database already initialized.")
 
 if __name__ == '__main__':
     init_db()

@@ -48,6 +48,16 @@ class RegistrationForm(FlaskForm):
         ('parent', 'Parent')
     ], validators=[DataRequired()])
     
+    grade = SelectField('Grade', choices=[
+        ('6', 'Class 6'),
+        ('7', 'Class 7'),
+        ('8', 'Class 8'),
+        ('9', 'Class 9'),
+        ('10', 'Class 10'),
+        ('11', 'Class 11'),
+        ('12', 'Class 12')
+    ])
+    
     password = PasswordField('Password', validators=[
         DataRequired(),
         Length(min=8, message="Password must be at least 8 characters long"),

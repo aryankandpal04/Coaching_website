@@ -1,0 +1,111 @@
+{% macro render_field(field, label=None, help_text=None, icon=None) %}
+<div class="mb-3">
+    {% if label %}
+        {{ field.label(class="form-label") }}
+    {% endif %}
+    <div class="{% if icon %}input-group{% endif %}">
+        {% if icon %}
+            <span class="input-group-text">
+                <i class="{{ icon }}"></i>
+            </span>
+        {% endif %}
+        {% if field.type == 'BooleanField' %}
+            <div class="form-check">
+                {{ field(class="form-check-input") }}
+                {{ field.label(class="form-check-label") }}
+            </div>
+        {% else %}
+            {{ field(class="form-control" + (" is-invalid" if field.errors else "")) }}
+        {% endif %}
+        {% if field.errors %}
+            <div class="invalid-feedback">
+                {% for error in field.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    {% if help_text %}
+        <div class="form-text text-muted">{{ help_text }}</div>
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro render_search_form(url, placeholder="Search...", method="GET") %}
+<form action="{{ url }}" method="{{ method }}" class="search-box mb-4">
+    <div class="input-group">
+        <span class="input-group-text border-0 bg-transparent">
+            <i class="fas fa-search"></i>
+        </span>
+        <input type="search" name="q" class="form-control border-0 shadow-none ps-0" placeholder="{{ placeholder }}" value="{{ request.args.get('q', '') }}">
+    </div>
+</form>
+{% endmacro %}
+
+{% macro render_filter_form(filters, current_filters={}) %}
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            {% for filter in filters %}
+                <div class="col-md-{{ filter.width|default(3) }}">
+                    <label class="form-label">{{ filter.label }}</label>
+                    {% if filter.type == "select" %}
+                        <select name="{{ filter.name }}" class="form-select">
+                            <option value="">All {{ filter.label }}</option>
+                            {% for option in filter.options %}
+                                <option value="{{ option.value }}" {% if current_filters.get(filter.name) == option.value %}selected{% endif %}>
+                                    {{ option.label }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    {% elif filter.type == "date" %}
+                        <input type="date" name="{{ filter.name }}" class="form-control" value="{{ current_filters.get(filter.name, '') }}">
+                    {% else %}
+                        <input type="{{ filter.type }}" name="{{ filter.name }}" class="form-control" value="{{ current_filters.get(filter.name, '') }}" placeholder="{{ filter.placeholder|default('') }}">
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <div class="col-md-auto align-self-end">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-filter me-1"></i>Apply Filters
+                </button>
+                <a href="{{ request.path }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-times me-1"></i>Clear
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro render_pagination(pagination, endpoint) %}
+{% if pagination.pages > 1 %}
+<nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+        <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+            <a class="page-link" href="{{ url_for(endpoint, page=pagination.prev_num) if pagination.has_prev else '#' }}">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+        </li>
+        
+        {% for page in pagination.iter_pages() %}
+            {% if page %}
+                <li class="page-item {% if page == pagination.page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for(endpoint, page=page) }}">{{ page }}</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+            {% endif %}
+        {% endfor %}
+        
+        <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+            <a class="page-link" href="{{ url_for(endpoint, page=pagination.next_num) if pagination.has_next else '#' }}">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+        </li>
+    </ul>
+</nav>
+{% endif %}
+{% endmacro %} 
